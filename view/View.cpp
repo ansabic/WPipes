@@ -3,44 +3,106 @@
 //
 
 #include "View.h"
-#include <ncurses.h>
+#include "../common/Constants.h"
+#include <curses.h>
+#include <chrono>
 
-View::View(Controller& controller): controller(controller) {
+View::View(Controller &controller) : controller(controller) {
 
 }
 
 void View::loop() {
     controller.begin();
-    while(controller.isPlaying()) {
-        listenForClicks();
+    auto startTime = std::chrono::high_resolution_clock::now();
+    while (controller.isPlaying()) {
+        auto refTime = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(refTime - startTime);
+        //LOGIC OUTSIDE OF FPS CONDITION
+        listenForEvents();
+        if (duration.count() >= 1000 / FPS) {
+            //DRAWING HERE
+            //TODO OpenGL
+        }
     }
 }
 
-void View::listenForClicks() {
+void View::listenForEvents() {
     int input = getch();
-    Action result = controller.checkPressedKey(input);
+    Action result = controller.checkState(input);
     switch (result) {
-
         case movedUp:
+            moveUp();
             break;
         case movedDown:
+            moveDown();
             break;
         case movedLeft:
+            moveLeft();
             break;
         case movedRight:
+            moveRight();
             break;
         case hitEnterOrSpace:
+            spawnNew();
             break;
         case showErrorMovement:
+            movementError();
             break;
         case showErrorPlacement:
+            placementError();
+            break;
+        case gameEndedFull:
+            showGameOver();
+            break;
+        case neutral:
             break;
     }
-    showError(!everythingGood);
 }
-void View::showError(bool shouldShow) {
-    if(shouldShow) {
-        //TODO Show error with OpenGL
-    }
+
+void View::spawnNew() {
+    GameStateDTO state = controller.getState();
+    showResult(state.score);
+    showFreeEnds(state.freeEnds);
+    drawNewPipe(state.newPipe);
+}
+
+void View::moveUp() {
+    //TODO OpenGL
+}
+
+void View::moveDown() {
+    //TODO OpenGL
+}
+
+void View::moveLeft() {
+    //TODO OpenGL
+}
+
+void View::moveRight() {
+    //TODO OpenGL
+}
+
+void View::movementError() {
+    //TODO OpenGL
+}
+
+void View::placementError() {
+    //TODO OpenGL
+}
+
+void View::showResult(int score) {
+    //TODO OpenGL
+}
+
+void View::showFreeEnds(int ends) {
+    //TODO OpenGL
+}
+
+void View::drawNewPipe(PositionedPipe pipe) {
+    //TODO OpenGL
+}
+
+void View::showGameOver() {
+    //TODO OpenGL
 }
 

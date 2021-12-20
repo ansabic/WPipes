@@ -10,12 +10,35 @@
 
 class View {
     Controller controller;
-    void listenForClicks();
-    static void showError(bool shouldShow);
+
+    void listenForEvents();
+
 public:
-    explicit View(Controller& controller);
+    explicit View(Controller &controller);
+
     void loop();
 
+    void moveUp();
+
+    void moveDown();
+
+    void moveLeft();
+
+    void moveRight();
+
+    void spawnNew();
+
+    void movementError();
+
+    void placementError();
+
+    void showResult(int score);
+
+    void showFreeEnds(int ends);
+
+    void drawNewPipe(PositionedPipe pipe);
+
+    void showGameOver();
 };
 
 

@@ -10,11 +10,11 @@ bool CommonFunctions::randomBool() {
 }
 
 int CommonFunctions::max(int a, int b) {
-    return a>b?a:b;
+    return a > b ? a : b;
 }
 
 int CommonFunctions::min(int a, int b) {
-    return a<b?a:b;
+    return a < b ? a : b;
 }
 
 

@@ -14,16 +14,27 @@ class Point {
     int y;
 public:
     Point();
+
     Point(int x, int y);
+
     int getX() const;
+
     int getY() const;
+
     bool isNeighbor(Point other) const;
-    static bool areWithinLimits(Point& p1, Point& p2);
+
+    static bool areWithinLimits(Point &p1, Point &p2);
+
     PointRelation operator-(Point other) const;
+
     bool operator==(Point other) const;
+
     void minusX();
+
     void minusY();
+
     void addX();
+
     void addY();
 };
 

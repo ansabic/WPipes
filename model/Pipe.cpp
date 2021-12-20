@@ -7,13 +7,12 @@
 
 
 Pipe::Pipe(bool first) {
-    if(!first) {
+    if (!first) {
         openLeft = CommonFunctions::randomBool();
         openTop = CommonFunctions::randomBool();
         openRight = CommonFunctions::randomBool();
         openBottom = CommonFunctions::randomBool();
-    }
-    else {
+    } else {
         openLeft = true;
         openBottom = true;
         openRight = true;
@@ -21,7 +20,7 @@ Pipe::Pipe(bool first) {
     }
 }
 
-Pipe Pipe::getPipe() const{
+Pipe Pipe::getPipe() const {
     return *this;
 }
 
@@ -40,6 +39,7 @@ bool Pipe::getTop() const {
 bool Pipe::getBottom() const {
     return openBottom;
 }
+
 void Pipe::setBottom() {
     openBottom = false;
 }

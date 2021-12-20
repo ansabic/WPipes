@@ -14,12 +14,13 @@ void Game::endGame() {
     started = false;
 }
 
-void Game::addPipe(PositionedPipe& pipe) {
+void Game::addPipe(PositionedPipe &pipe) {
     pipes.push_back(pipe);
+    generateNextPipe();
 }
 
 bool Game::movePointer(Direction direction) {
-    if(isLegitMove(direction)) {
+    if (isLegitMove(direction)) {
         switch (direction) {
             case left:
                 pointer.minusX();
@@ -34,10 +35,9 @@ bool Game::movePointer(Direction direction) {
                 pointer.addY();
                 return true;
         }
-    }
-    else {
-       return false;
-    }
+    } else
+        return false;
+    return false;
 }
 
 bool Game::isLegitMove(Direction &direction) const {
@@ -51,26 +51,28 @@ bool Game::isLegitMove(Direction &direction) const {
 }
 
 bool Game::alreadyExistsThere() const {
-    for(PositionedPipe pipe: pipes) {
-        if(pointer == pipe.getPosition())
+    for (PositionedPipe pipe: pipes) {
+        if (pointer == pipe.getPosition())
             return true;
         else
             return false;
     }
+    return false;
 }
 
-bool Game::validateAndCalculateConnections(PositionedPipe& pipe) {
-    bool badFlag = false;
-    for(PositionedPipe tempPipe: pipes)
-        badFlag = badFlag || tempPipe.updateIfLegit(pipe);
-    if(badFlag)
+bool Game::validateAndCalculateConnections(PositionedPipe &pipe) {
+    bool everythingOk = false;
+    for (PositionedPipe tempPipe: pipes)
+        everythingOk = everythingOk || tempPipe.updateIfLegit(pipe);
+    if (everythingOk)
         addPipe(pipe);
+
     setFreeHoles(pipe.getFreeEnds());
-    return !badFlag;
+    return everythingOk;
 }
 
 void Game::setFreeHoles(int diff) {
-    freeHoles+=diff;
+    freeHoles += diff;
 }
 
 bool Game::setDummyPipeAndCheck() {
@@ -86,11 +88,11 @@ Game::Game() {
     started = false;
     freeHoles = 0;
     nextPipe = Pipe(true, true, true, true);
-    pointer = Point(0,0);
-    start = (int)random() % (LIMIT_BOTTOM * 2 + LIMIT_RIGHT * 2);
-    int result = (int)random() % (LIMIT_BOTTOM * 2 + LIMIT_RIGHT * 2);
-    while(result == start)
-        result = (int)random() % (LIMIT_BOTTOM * 2 + LIMIT_RIGHT * 2);
+    pointer = Point(0, 0);
+    start = (int) random() % (LIMIT_BOTTOM * 2 + LIMIT_RIGHT * 2);
+    int result = (int) random() % (LIMIT_BOTTOM * 2 + LIMIT_RIGHT * 2);
+    while (result == start)
+        result = (int) random() % (LIMIT_BOTTOM * 2 + LIMIT_RIGHT * 2);
     end = result;
     points = 0;
 }
@@ -98,4 +100,21 @@ Game::Game() {
 bool Game::isPlaying() const {
     return started;
 }
+
+int Game::getFreeEnds() const {
+    return freeHoles;
+}
+
+int Game::getPoints() const {
+    return points;
+}
+
+PositionedPipe Game::getLastAdded() const {
+    return pipes.back();
+}
+
+int Game::getNumberOfSetPipes() const {
+    return (int) pipes.size();
+}
+
 

@@ -9,14 +9,19 @@
 #include "Pipe.h"
 #include "Point.h"
 
-class PositionedPipe: public Pipe {
+class PositionedPipe : public Pipe {
     Point position;
-    bool checkIfCompatibleSidesAndResetEnds(PositionedPipe& other) const;
+
+    bool checkIfCompatibleSidesAndResetEnds(PositionedPipe &other) const;
+
 public:
-    PositionedPipe(int x, int y, Pipe& pipe);
+    PositionedPipe(int x, int y, Pipe &pipe);
+
     Point getPosition() const;
+
     int getFreeEnds() const;
-    bool updateIfLegit(PositionedPipe& other);
+
+    bool updateIfLegit(PositionedPipe &other);
 };
 
 

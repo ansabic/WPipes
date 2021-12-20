@@ -9,7 +9,9 @@
 #include <vector>
 #include "PositionedPipe.h"
 
-enum Direction {left, up, right, down};
+enum Direction {
+    left, up, right, down
+};
 
 class Game {
     bool started;
@@ -21,20 +23,38 @@ class Game {
     int end;
     int points;
 
-    void addPipe(PositionedPipe& pipe);
-    bool validateAndCalculateConnections(PositionedPipe& pipe);
+    void addPipe(PositionedPipe &pipe);
+
+    bool validateAndCalculateConnections(PositionedPipe &pipe);
+
     void setFreeHoles(int diff);
-    bool isLegitMove(Direction& direction) const;
+
+    bool isLegitMove(Direction &direction) const;
+
 public:
     void startGame();
+
     void endGame();
+
     bool isPlaying() const;
+
     void generateNextPipe();
+
     bool setDummyPipeAndCheck();
+
     bool movePointer(Direction direction);
+
     bool alreadyExistsThere() const;
 
+    int getFreeEnds() const;
+
+    int getPoints() const;
+
+    PositionedPipe getLastAdded() const;
+
     Game();
+
+    int getNumberOfSetPipes() const;
 };
 
 
