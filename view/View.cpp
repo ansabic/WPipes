@@ -17,11 +17,9 @@ void View::loop() {
     while (controller.isPlaying()) {
         auto refTime = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(refTime - startTime);
-        //LOGIC OUTSIDE OF FPS CONDITION
-        listenForEvents();
         if (duration.count() >= 1000 / FPS) {
-            //DRAWING HERE
-            //TODO OpenGL
+            listenForEvents();
+            startTime = std::chrono::high_resolution_clock::now();
         }
     }
 }

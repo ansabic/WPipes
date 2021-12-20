@@ -25,5 +25,7 @@ int main(int, char **) {
             SDL_Delay(2000);
         }
     }
+    View view = initView();
+    view.loop();
     return 0;
 }
