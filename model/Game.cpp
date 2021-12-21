@@ -42,9 +42,9 @@ bool Game::movePointer(Direction direction) {
 
 bool Game::isLegitMove(Direction &direction) const {
     if (pointer.getX() == LIMIT_LEFT && direction == left ||
-        pointer.getX() == LIMIT_RIGHT && direction == right ||
+        pointer.getX() == LIMIT_RIGHT - 1 && direction == right ||
         pointer.getY() == LIMIT_UP && direction == up ||
-        pointer.getY() == LIMIT_BOTTOM && direction == down)
+        pointer.getY() == LIMIT_BOTTOM - 1 && direction == down)
         return false;
     else
         return true;
@@ -115,6 +115,10 @@ PositionedPipe Game::getLastAdded() const {
 
 int Game::getNumberOfSetPipes() const {
     return (int) pipes.size();
+}
+
+Point Game::getPointer() const {
+    return pointer;
 }
 
 

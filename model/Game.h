@@ -48,6 +48,8 @@ public:
 
     int getFreeEnds() const;
 
+    Point getPointer() const;
+
     int getPoints() const;
 
     PositionedPipe getLastAdded() const;

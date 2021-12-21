@@ -30,7 +30,9 @@ public:
 
     bool isPlaying() const;
 
-    Action checkState(int input);
+    Point getPosition() const;
+
+    Action checkState(unsigned int input);
 
     GameStateDTO getState() const;
 

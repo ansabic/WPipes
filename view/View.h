@@ -6,10 +6,18 @@
 #define WPIPES_VIEW_H
 
 
+#include <SDL_video.h>
+#include <SDL_render.h>
 #include "../contoller/Controller.h"
 
 class View {
     Controller controller;
+    SDL_Window *window;
+    SDL_Surface *screenSurface;
+    SDL_Surface *pointerSurface;
+    SDL_Renderer *rend;
+    SDL_Texture *tex;
+    SDL_Rect *dest;
 
     void listenForEvents();
 
@@ -39,6 +47,7 @@ public:
     void drawNewPipe(PositionedPipe pipe);
 
     void showGameOver();
+
 };
 
 
