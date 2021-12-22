@@ -121,4 +121,13 @@ Point Game::getPointer() const {
     return pointer;
 }
 
+PositionedPipe Game::setFirstPipe() {
+    Pipe allFour = Pipe(true);
+    PositionedPipe firstPipe = PositionedPipe(LIMIT_RIGHT / 2, LIMIT_BOTTOM / 2, allFour);
+    addPipe(firstPipe);
+    setFreeHoles(firstPipe.getFreeEnds());
+    generateNextPipe();
+    return firstPipe;
+}
+
 

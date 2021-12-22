@@ -50,6 +50,7 @@ bool Controller::checkCount() {
         return false;
 }
 
-Point Controller::getPosition() const {
-    return game.getPointer();
+PositionedPipe Controller::placeFirstPipe() {
+    return game.setFirstPipe();
 }
+

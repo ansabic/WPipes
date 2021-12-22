@@ -4,6 +4,7 @@
 
 #include "View.h"
 #include "../common/Constants.h"
+#include "TextureWithDestination.h"
 #include <SDL_events.h>
 #include <SDL.h>
 
@@ -45,11 +46,17 @@ View::View(Controller &controller) : controller(controller) {
 
 void View::loop() {
     controller.begin();
+    placeFirstPipe();
     while (controller.isPlaying()) {
         listenForEvents();
+
         SDL_RenderClear(rend);
         SDL_RenderCopy(rend, tex, nullptr, dest);
+        for (TextureWithDestination textureDTO: pipesUiTextures) {
+            SDL_RenderCopy(rend, textureDTO.getTexture(), nullptr, textureDTO.getRect());
+        }
         SDL_RenderPresent(rend);
+
         SDL_Delay(1000 / FPS);
     }
 }
@@ -96,7 +103,7 @@ void View::spawnNew() {
     GameStateDTO state = controller.getState();
     showResult(state.score);
     showFreeEnds(state.freeEnds);
-    drawNewPipe(state.newPipe);
+    drawNewPipe(state.newPipe.dimensionsInPx());
 }
 
 void View::moveUp() {
@@ -132,11 +139,23 @@ void View::showFreeEnds(int ends) {
 }
 
 void View::drawNewPipe(PositionedPipe pipe) {
-    //TODO OpenGL
+    PipeUI pipeUi = PipeUI();
+    pipeUi.setDest(pipe.getPosition());
+    pipeUi.setTypeFromPipe(pipe.getPipe());
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(rend, pipeUi.getSurface());
+    TextureWithDestination newTexWithDest = TextureWithDestination(texture, pipeUi.getRect());
+    pipesUiTextures.push_back(newTexWithDest);
+    SDL_QueryTexture(texture, nullptr, nullptr, &pipeUi.getRect()->w, &pipeUi.getRect()->h);
+    pipeUi.scale();
 }
 
 void View::showGameOver() {
     //TODO OpenGL
+}
+
+void View::placeFirstPipe() {
+    PositionedPipe firstPipe = controller.placeFirstPipe();
+    drawNewPipe(firstPipe.dimensionsInPx());
 }
 
 

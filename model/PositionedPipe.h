@@ -22,6 +22,8 @@ public:
     int getFreeEnds() const;
 
     bool updateIfLegit(PositionedPipe &other);
+
+    PositionedPipe dimensionsInPx() const;
 };
 
 

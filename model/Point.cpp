@@ -2,7 +2,6 @@
 // Created by antonio on 19. 12. 2021..
 //
 
-#include <valarray>
 #include "Point.h"
 #include "../common/CommonFunctions.h"
 #include "../common/Constants.h"

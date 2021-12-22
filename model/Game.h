@@ -57,6 +57,8 @@ public:
     Game();
 
     int getNumberOfSetPipes() const;
+
+    PositionedPipe setFirstPipe();
 };
 
 

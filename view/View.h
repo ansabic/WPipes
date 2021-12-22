@@ -9,6 +9,8 @@
 #include <SDL_video.h>
 #include <SDL_render.h>
 #include "../contoller/Controller.h"
+#include "PipeUI.h"
+#include "TextureWithDestination.h"
 
 class View {
     Controller controller;
@@ -18,6 +20,7 @@ class View {
     SDL_Renderer *rend;
     SDL_Texture *tex;
     SDL_Rect *dest;
+    std::vector<TextureWithDestination> pipesUiTextures;
 
     void listenForEvents();
 
@@ -48,6 +51,7 @@ public:
 
     void showGameOver();
 
+    void placeFirstPipe();
 };
 
 

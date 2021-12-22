@@ -5,6 +5,8 @@
 #ifndef WPIPES_CONSTANTS_H
 #define WPIPES_CONSTANTS_H
 
+#include <SDL_surface.h>
+
 const int LIMIT_LEFT = 0;
 const int LIMIT_RIGHT = 25;
 const int LIMIT_BOTTOM = 25;

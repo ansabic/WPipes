@@ -30,13 +30,13 @@ public:
 
     bool isPlaying() const;
 
-    Point getPosition() const;
-
     Action checkState(unsigned int input);
 
     GameStateDTO getState() const;
 
     bool checkCount();
+
+    PositionedPipe placeFirstPipe();
 };
 
 

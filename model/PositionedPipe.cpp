@@ -78,5 +78,13 @@ int PositionedPipe::getFreeEnds() const {
     return counter;
 }
 
+PositionedPipe PositionedPipe::dimensionsInPx() const {
+    Pipe tempPipe = getPipe();
+    PositionedPipe properDimensions = PositionedPipe(getPosition().getX() * SCREEN_WIDTH / LIMIT_RIGHT,
+                                                     getPosition().getY() * SCREEN_HEIGHT / LIMIT_BOTTOM,
+                                                     tempPipe);
+    return properDimensions;
+}
+
 
 
