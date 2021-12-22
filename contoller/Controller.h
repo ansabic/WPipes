@@ -18,6 +18,7 @@ enum Action {
     showErrorMovement,
     showErrorPlacement,
     neutral,
+    changedPipe,
     gameEndedFull
 };
 
@@ -36,7 +37,11 @@ public:
 
     bool checkCount();
 
-    PositionedPipe placeFirstPipe();
+    void pickNext();
+
+    int getPosition() const;
+
+    std::vector<Pipe> newPool() const;
 };
 
 

@@ -2,9 +2,7 @@
 // Created by antonio on 19. 12. 2021..
 //
 
-#include <cmath>
 #include "PositionedPipe.h"
-#include "../common/CommonFunctions.h"
 #include "../common/Constants.h"
 
 PositionedPipe::PositionedPipe(int x, int y, Pipe &pipe) : position(Point(x, y)) {
@@ -12,45 +10,44 @@ PositionedPipe::PositionedPipe(int x, int y, Pipe &pipe) : position(Point(x, y))
 }
 
 bool PositionedPipe::updateIfLegit(PositionedPipe &other) {
-    if (Point::areWithinLimits(position, other.position) && checkIfCompatibleSidesAndResetEnds(other))
-        return true;
-    else
+    if (Point::areWithinLimits(position, other.position)) {
+        if (checkIfCompatibleSidesAndResetEnds(other))
+            return true;
+    } else
         return false;
 }
 
-bool PositionedPipe::checkIfCompatibleSidesAndResetEnds(PositionedPipe &other) const {
+bool PositionedPipe::checkIfCompatibleSidesAndResetEnds(PositionedPipe &other) {
     if (position.isNeighbor(other.position)) {
         Point p1 = position;
         Point p2 = other.position;
         PointRelation relation = p1 - p2;
-        Pipe thisPipe = getPipe();
-        Pipe otherPipe = other.getPipe();
         switch (relation) {
             case leftFrom:
-                if (thisPipe.getRight() && otherPipe.getLeft()) {
-                    thisPipe.setRight();
-                    otherPipe.setLeft();
+                if (getRight() && other.getLeft()) {
+                    setRight();
+                    other.setLeft();
                     return true;
                 } else
                     return false;
             case upFrom:
-                if (thisPipe.getBottom() && otherPipe.getTop()) {
-                    thisPipe.setBottom();
-                    otherPipe.setTop();
+                if (getBottom() && other.getTop()) {
+                    setBottom();
+                    other.setTop();
                     return true;
                 } else
                     return false;
             case rightFrom:
-                if (thisPipe.getLeft() && otherPipe.getRight()) {
-                    thisPipe.setLeft();
-                    otherPipe.setRight();
+                if (getLeft() && other.getRight()) {
+                    setLeft();
+                    other.setRight();
                     return true;
                 } else
                     return false;
             case downFrom:
-                if (thisPipe.getTop() && otherPipe.getBottom()) {
-                    thisPipe.setTop();
-                    otherPipe.setBottom();
+                if (getTop() && other.getBottom()) {
+                    setTop();
+                    other.setBottom();
                     return true;
                 } else
                     return false;
@@ -84,6 +81,10 @@ PositionedPipe PositionedPipe::dimensionsInPx() const {
                                                      getPosition().getY() * SCREEN_HEIGHT / LIMIT_BOTTOM,
                                                      tempPipe);
     return properDimensions;
+}
+
+void PositionedPipe::updatePipe(Pipe &pipe) {
+    setPipe(pipe);
 }
 
 

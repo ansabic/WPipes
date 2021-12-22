@@ -3,7 +3,6 @@
 //
 
 #include "View.h"
-#include "../common/Constants.h"
 #include "TextureWithDestination.h"
 #include <SDL_events.h>
 #include <SDL.h>
@@ -15,6 +14,9 @@ View::View(Controller &controller) : controller(controller) {
     rend = nullptr;
     tex = nullptr;
     dest = nullptr;
+    dotRect = nullptr;
+    dotSurface = nullptr;
+    dotTexture = nullptr;
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
     } else {
@@ -22,7 +24,7 @@ View::View(Controller &controller) : controller(controller) {
                 "WaterPipes",
                 SDL_WINDOWPOS_CENTERED,
                 SDL_WINDOWPOS_CENTERED,
-                SCREEN_WIDTH,
+                SCREEN_WIDTH + ADDITIONAL_WIDTH,
                 SCREEN_HEIGHT,
                 0);
         if (window == nullptr)
@@ -40,6 +42,13 @@ View::View(Controller &controller) : controller(controller) {
             SDL_QueryTexture(tex, nullptr, nullptr, &dest->w, &dest->h);
             dest->h = SCREEN_HEIGHT / LIMIT_BOTTOM;
             dest->w = SCREEN_WIDTH / LIMIT_RIGHT;
+
+            dotRect = new SDL_Rect();
+            dotRect->x = SCREEN_WIDTH + OFFSET_X_POINT;
+            dotRect->y = OFFSET_Y;
+            dotSurface = SDL_LoadBMP("/home/antonio/CLionProjects/WPipes/assets/green_dot.bmp");
+            dotTexture = SDL_CreateTextureFromSurface(rend, dotSurface);
+            SDL_QueryTexture(dotTexture, nullptr, nullptr, &dotRect->w, &dotRect->h);
         }
     }
 }
@@ -49,12 +58,16 @@ void View::loop() {
     placeFirstPipe();
     while (controller.isPlaying()) {
         listenForEvents();
-
+        //listenForChanges();
         SDL_RenderClear(rend);
         SDL_RenderCopy(rend, tex, nullptr, dest);
-        for (TextureWithDestination textureDTO: pipesUiTextures) {
+        SDL_RenderCopy(rend, dotTexture, nullptr, dotRect);
+        for (TextureWithDestination textureDTO: pipesUiTextures)
             SDL_RenderCopy(rend, textureDTO.getTexture(), nullptr, textureDTO.getRect());
-        }
+
+        for (TextureWithDestination textureDTO: poolTextures)
+            SDL_RenderCopy(rend, textureDTO.getTexture(), nullptr, textureDTO.getRect());
+
         SDL_RenderPresent(rend);
 
         SDL_Delay(1000 / FPS);
@@ -91,8 +104,12 @@ void View::listenForEvents() {
                 case gameEndedFull:
                     showGameOver();
                     break;
+                case changedPipe:
+                    changePipe();
+                    break;
                 case neutral:
                     break;
+
             }
         }
     }
@@ -154,8 +171,45 @@ void View::showGameOver() {
 }
 
 void View::placeFirstPipe() {
-    PositionedPipe firstPipe = controller.placeFirstPipe();
+    Pipe pipe = Pipe(true);
+    PositionedPipe firstPipe = PositionedPipe(LIMIT_RIGHT / 2, LIMIT_BOTTOM / 2, pipe);
     drawNewPipe(firstPipe.dimensionsInPx());
+}
+
+void View::changePipe() {
+    int position = controller.getPosition();
+    switch (position) {
+        case 0:
+        case 1:
+        case 2:
+        case 3:
+            dotRect->y += SCREEN_HEIGHT / 5;
+            break;
+        case 4:
+            dotRect->y = 25;
+            break;
+        default:
+            break;
+    }
+}
+
+void View::listenForChanges() {
+    std::vector<Pipe> pool = controller.newPool();
+    int counter = 0;
+    poolTextures.clear();
+    for (Pipe pipe: pool) {
+        PipeUI pipeUi = PipeUI();
+        PositionedPipe positioned = PositionedPipe(LIMIT_RIGHT + OFFSET_X_POOL, OFFSET_Y + counter * SCREEN_HEIGHT / 5,
+                                                   pipe);
+        pipeUi.setDest(positioned.getPosition());
+        pipeUi.setTypeFromPipe(positioned.getPipe());
+        SDL_Texture *texture = SDL_CreateTextureFromSurface(rend, pipeUi.getSurface());
+        TextureWithDestination newTexWithDest = TextureWithDestination(texture, pipeUi.getRect());
+        poolTextures.push_back(newTexWithDest);
+        SDL_QueryTexture(texture, nullptr, nullptr, &pipesUiTextures.back().getRect()->w,
+                         &pipesUiTextures.back().getRect()->h);
+        pipeUi.scale();
+    }
 }
 
 

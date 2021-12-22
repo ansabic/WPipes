@@ -28,8 +28,11 @@ Action Controller::checkState(unsigned int input) {
         action = game.movePointer(left) ? movedLeft : showErrorMovement;
     else if (input == SDL_SCANCODE_D || input == SDL_SCANCODE_RIGHT)
         action = game.movePointer(right) ? movedRight : showErrorMovement;
-    else if (input == SDL_SCANCODE_RETURN || input == SDL_SCANCODE_SPACE) {
+    else if (input == SDL_SCANCODE_RETURN || input == SDL_SCANCODE_SPACE)
         action = game.setDummyPipeAndCheck() ? hitEnterOrSpace : showErrorPlacement;
+    else if (input == SDL_SCANCODE_LSHIFT || input == SDL_SCANCODE_RSHIFT) {
+        pickNext();
+        action = changedPipe;
     } else
         action = neutral;
     if (checkCount())
@@ -39,7 +42,7 @@ Action Controller::checkState(unsigned int input) {
 }
 
 GameStateDTO Controller::getState() const {
-    return {game.getFreeEnds(), game.getPoints(), game.getLastAdded()};
+    return {game.getFreeEnds(), game.getPoints(), game.lastToDraw()};
 }
 
 bool Controller::checkCount() {
@@ -50,7 +53,15 @@ bool Controller::checkCount() {
         return false;
 }
 
-PositionedPipe Controller::placeFirstPipe() {
-    return game.setFirstPipe();
+void Controller::pickNext() {
+    game.changeNext();
+}
+
+int Controller::getPosition() const {
+    return game.getPosition();
+}
+
+std::vector<Pipe> Controller::newPool() const {
+    return game.getPool();
 }
 

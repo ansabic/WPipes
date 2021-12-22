@@ -20,7 +20,11 @@ class View {
     SDL_Renderer *rend;
     SDL_Texture *tex;
     SDL_Rect *dest;
+    SDL_Surface *dotSurface;
+    SDL_Texture *dotTexture;
+    SDL_Rect *dotRect;
     std::vector<TextureWithDestination> pipesUiTextures;
+    std::vector<TextureWithDestination> poolTextures;
 
     void listenForEvents();
 
@@ -52,6 +56,10 @@ public:
     void showGameOver();
 
     void placeFirstPipe();
+
+    void changePipe();
+
+    void listenForChanges();
 };
 
 

@@ -62,12 +62,14 @@ bool Game::alreadyExistsThere() const {
 
 bool Game::validateAndCalculateConnections(PositionedPipe &pipe) {
     bool everythingOk = false;
-    for (PositionedPipe tempPipe: pipes)
+    *toDraw = pipe;
+    for (PositionedPipe tempPipe: pipes) {
         everythingOk = everythingOk || tempPipe.updateIfLegit(pipe);
-    if (everythingOk)
+    }
+    if (everythingOk) {
         addPipe(pipe);
-
-    setFreeHoles(pipe.getFreeEnds());
+        setFreeHoles(pipe.getFreeEnds());
+    }
     return everythingOk;
 }
 
@@ -81,13 +83,21 @@ bool Game::setDummyPipeAndCheck() {
 }
 
 void Game::generateNextPipe() {
-    nextPipe = Pipe();
+    pipePool.clear();
+    for (int i = 0; i < PIPE_POOL; i++) {
+        Pipe dummyPipe = Pipe();
+        pipePool.push_back(dummyPipe);
+    }
+    nextPipe = pipePool[*position];
 }
 
 Game::Game() {
+    position = new int;
+    setFirstPipe();
     started = false;
     freeHoles = 0;
-    nextPipe = Pipe(true, true, true, true);
+    *position = 0;
+    nextPipe = pipePool[*position].getPipe();
     pointer = Point(0, 0);
     start = (int) random() % (LIMIT_BOTTOM * 2 + LIMIT_RIGHT * 2);
     int result = (int) random() % (LIMIT_BOTTOM * 2 + LIMIT_RIGHT * 2);
@@ -95,6 +105,8 @@ Game::Game() {
         result = (int) random() % (LIMIT_BOTTOM * 2 + LIMIT_RIGHT * 2);
     end = result;
     points = 0;
+    toDraw = new PositionedPipe(0, 0, nextPipe);
+    *toDraw = PositionedPipe(0, 0, nextPipe);
 }
 
 bool Game::isPlaying() const {
@@ -109,8 +121,8 @@ int Game::getPoints() const {
     return points;
 }
 
-PositionedPipe Game::getLastAdded() const {
-    return pipes.back();
+PositionedPipe Game::lastToDraw() const {
+    return *toDraw;
 }
 
 int Game::getNumberOfSetPipes() const {
@@ -128,6 +140,21 @@ PositionedPipe Game::setFirstPipe() {
     setFreeHoles(firstPipe.getFreeEnds());
     generateNextPipe();
     return firstPipe;
+}
+
+void Game::changeNext() {
+    if (*position < PIPE_POOL - 1)
+        (*position)++;
+    else
+        *position = 0;
+}
+
+int Game::getPosition() const {
+    return *position;
+}
+
+std::vector<Pipe> Game::getPool() const {
+    return pipePool;
 }
 
 

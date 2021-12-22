@@ -17,11 +17,14 @@ class Game {
     bool started;
     std::vector<PositionedPipe> pipes;
     int freeHoles;
-    Pipe nextPipe;
+    int *position;
+    std::vector<Pipe> pipePool;
+    PositionedPipe *toDraw;
     Point pointer;
     int start;
     int end;
     int points;
+    Pipe nextPipe;
 
     void addPipe(PositionedPipe &pipe);
 
@@ -30,6 +33,8 @@ class Game {
     void setFreeHoles(int diff);
 
     bool isLegitMove(Direction &direction) const;
+
+    PositionedPipe setFirstPipe();
 
 public:
     void startGame();
@@ -52,13 +57,17 @@ public:
 
     int getPoints() const;
 
-    PositionedPipe getLastAdded() const;
+    void changeNext();
+
+    PositionedPipe lastToDraw() const;
 
     Game();
 
     int getNumberOfSetPipes() const;
 
-    PositionedPipe setFirstPipe();
+    int getPosition() const;
+
+    std::vector<Pipe> getPool() const;
 };
 
 

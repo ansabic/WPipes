@@ -21,9 +21,26 @@ void PipeUI::setTypeFromPipe(Pipe pipe) {
     const SDL_Surface *ltrb = SDL_LoadBMP("/home/antonio/CLionProjects/WPipes/assets/ltrb.bmp");
     const SDL_Surface *lr = SDL_LoadBMP("/home/antonio/CLionProjects/WPipes/assets/lr.bmp");
     const SDL_Surface *tb = SDL_LoadBMP("/home/antonio/CLionProjects/WPipes/assets/tb.bmp");
+    const SDL_Surface *ll = SDL_LoadBMP("/home/antonio/CLionProjects/WPipes/assets/l.bmp");
+    const SDL_Surface *tt = SDL_LoadBMP("/home/antonio/CLionProjects/WPipes/assets/t.bmp");
+    const SDL_Surface *rr = SDL_LoadBMP("/home/antonio/CLionProjects/WPipes/assets/r.bmp");
+    const SDL_Surface *bb = SDL_LoadBMP("/home/antonio/CLionProjects/WPipes/assets/b.bmp");
+
 
     type = new SDL_Surface();
-    if (l && r && !t && !b) {
+    if (l && !t && !r && !b) {
+        *type = *ll;
+        return;
+    } else if (!l && t && !r && !b) {
+        *type = *tt;
+        return;
+    } else if (!l && !t && r && !b) {
+        *type = *rr;
+        return;
+    } else if (!l && !t && !r && b) {
+        *type = *bb;
+        return;
+    } else if (l && r && !t && !b) {
         *type = *lr;
         return;
     } else if (l && t && !r && !b) {

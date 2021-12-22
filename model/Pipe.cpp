@@ -56,6 +56,7 @@ void Pipe::setLeft() {
     openLeft = false;
 }
 
+
 Pipe::Pipe(bool openLeft, bool openTop, bool openRight, bool openBottom) {
     this->openLeft = openLeft;
     this->openRight = openRight;

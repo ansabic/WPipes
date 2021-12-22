@@ -14,9 +14,9 @@ Point::Point(int newX, int newY) {
 PointRelation Point::operator-(Point other) const {
     if (x == other.x) {
         if (y > other.y)
-            return upFrom;
-        else if (y < other.y)
             return downFrom;
+        else if (y < other.y)
+            return upFrom;
         else
             return same;
     } else if (y == other.y) {
@@ -41,7 +41,7 @@ int Point::getY() const {
 bool Point::isNeighbor(Point other) const {
     int xDiff = abs(other.getX() - getX());
     int yDiff = abs(other.getY() - getY());
-    if ((xDiff == 1 && yDiff == 0) || (xDiff == 0 && yDiff == 1))
+    if (abs(xDiff - yDiff) == 1)
         return true;
     else
         return false;
