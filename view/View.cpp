@@ -6,6 +6,7 @@
 #include "TextureWithDestination.h"
 #include <SDL_events.h>
 #include <SDL.h>
+#include <SDL_messagebox.h>
 
 View::View(Controller &controller) : controller(controller) {
     window = nullptr;
@@ -35,10 +36,10 @@ View::View(Controller &controller) : controller(controller) {
             dest->y = 0;
             Uint32 render_flags = SDL_RENDERER_ACCELERATED;
             rend = SDL_CreateRenderer(window, -1, render_flags);
+            SDL_SetRenderDrawColor(rend, 255, 255, 255, 255);
             pointerSurface = SDL_LoadBMP("/home/antonio/CLionProjects/WPipes/assets/pointer.bmp");
             screenSurface = SDL_GetWindowSurface(window);
             tex = SDL_CreateTextureFromSurface(rend, pointerSurface);
-            SDL_FillRect(screenSurface, nullptr, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
             SDL_QueryTexture(tex, nullptr, nullptr, &dest->w, &dest->h);
             dest->h = SCREEN_HEIGHT / LIMIT_BOTTOM;
             dest->w = SCREEN_WIDTH / LIMIT_RIGHT;
@@ -58,7 +59,6 @@ void View::loop() {
     placeFirstPipe();
     while (controller.isPlaying()) {
         listenForEvents();
-        //newPool();
         SDL_RenderClear(rend);
         SDL_RenderCopy(rend, tex, nullptr, dest);
         SDL_RenderCopy(rend, dotTexture, nullptr, dotRect);
@@ -67,9 +67,7 @@ void View::loop() {
 
         for (TextureWithDestination textureDTO: poolTextures)
             SDL_RenderCopy(rend, textureDTO.getTexture(), nullptr, textureDTO.getRect());
-
         SDL_RenderPresent(rend);
-
         SDL_Delay(1000 / FPS);
     }
 }

@@ -60,6 +60,8 @@ public:
     void changePipeUI();
 
     void newPool();
+
+    void writeScore();
 };
 
 
