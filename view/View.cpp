@@ -58,7 +58,7 @@ void View::loop() {
     placeFirstPipe();
     while (controller.isPlaying()) {
         listenForEvents();
-        //listenForChanges();
+        //newPool();
         SDL_RenderClear(rend);
         SDL_RenderCopy(rend, tex, nullptr, dest);
         SDL_RenderCopy(rend, dotTexture, nullptr, dotRect);
@@ -105,7 +105,7 @@ void View::listenForEvents() {
                     showGameOver();
                     break;
                 case changedPipe:
-                    changePipe();
+                    changePipeUI();
                     break;
                 case neutral:
                     break;
@@ -164,6 +164,8 @@ void View::drawNewPipe(PositionedPipe pipe) {
     pipesUiTextures.push_back(newTexWithDest);
     SDL_QueryTexture(texture, nullptr, nullptr, &pipeUi.getRect()->w, &pipeUi.getRect()->h);
     pipeUi.scale();
+    newPool();
+    printf("%d", controller.getPosition());
 }
 
 void View::showGameOver() {
@@ -176,39 +178,34 @@ void View::placeFirstPipe() {
     drawNewPipe(firstPipe.dimensionsInPx());
 }
 
-void View::changePipe() {
+void View::changePipeUI() {
     int position = controller.getPosition();
-    switch (position) {
-        case 0:
-        case 1:
-        case 2:
-        case 3:
-            dotRect->y += SCREEN_HEIGHT / 5;
-            break;
-        case 4:
-            dotRect->y = 25;
-            break;
-        default:
-            break;
-    }
+    printf("%d", controller.getPosition());
+    if (position != 0)
+        dotRect->y += SCREEN_HEIGHT / 5;
+    else
+        dotRect->y = 25;
+
 }
 
-void View::listenForChanges() {
+void View::newPool() {
     std::vector<Pipe> pool = controller.newPool();
     int counter = 0;
     poolTextures.clear();
     for (Pipe pipe: pool) {
         PipeUI pipeUi = PipeUI();
-        PositionedPipe positioned = PositionedPipe(LIMIT_RIGHT + OFFSET_X_POOL, OFFSET_Y + counter * SCREEN_HEIGHT / 5,
+        PositionedPipe positioned = PositionedPipe(SCREEN_WIDTH + OFFSET_X_POOL,
+                                                   OFFSET_Y + counter * SCREEN_HEIGHT / PIPE_POOL,
                                                    pipe);
         pipeUi.setDest(positioned.getPosition());
         pipeUi.setTypeFromPipe(positioned.getPipe());
         SDL_Texture *texture = SDL_CreateTextureFromSurface(rend, pipeUi.getSurface());
         TextureWithDestination newTexWithDest = TextureWithDestination(texture, pipeUi.getRect());
         poolTextures.push_back(newTexWithDest);
-        SDL_QueryTexture(texture, nullptr, nullptr, &pipesUiTextures.back().getRect()->w,
-                         &pipesUiTextures.back().getRect()->h);
+        SDL_QueryTexture(texture, nullptr, nullptr, &poolTextures.back().getRect()->w,
+                         &poolTextures.back().getRect()->h);
         pipeUi.scale();
+        counter++;
     }
 }
 

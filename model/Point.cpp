@@ -75,7 +75,7 @@ void Point::addY() {
 }
 
 bool Point::operator==(Point other) const {
-    if (x == other.getX() && other.getY() == other.getY())
+    if (x == other.getX() && y == other.getY())
         return true;
     else
         return false;

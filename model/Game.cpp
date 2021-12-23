@@ -51,12 +51,9 @@ bool Game::isLegitMove(Direction &direction) const {
 }
 
 bool Game::alreadyExistsThere() const {
-    for (PositionedPipe pipe: pipes) {
+    for (PositionedPipe pipe: pipes)
         if (pointer == pipe.getPosition())
             return true;
-        else
-            return false;
-    }
     return false;
 }
 
@@ -79,7 +76,10 @@ void Game::setFreeHoles(int diff) {
 
 bool Game::setDummyPipeAndCheck() {
     PositionedPipe pipe = PositionedPipe(pointer.getX(), pointer.getY(), nextPipe);
-    return validateAndCalculateConnections(pipe);
+    if (alreadyExistsThere())
+        return false;
+    else
+        return validateAndCalculateConnections(pipe);
 }
 
 void Game::generateNextPipe() {
@@ -129,10 +129,6 @@ int Game::getNumberOfSetPipes() const {
     return (int) pipes.size();
 }
 
-Point Game::getPointer() const {
-    return pointer;
-}
-
 PositionedPipe Game::setFirstPipe() {
     Pipe allFour = Pipe(true);
     PositionedPipe firstPipe = PositionedPipe(LIMIT_RIGHT / 2, LIMIT_BOTTOM / 2, allFour);
@@ -147,6 +143,7 @@ void Game::changeNext() {
         (*position)++;
     else
         *position = 0;
+    nextPipe = pipePool[*position];
 }
 
 int Game::getPosition() const {

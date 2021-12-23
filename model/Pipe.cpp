@@ -7,17 +7,19 @@
 
 
 Pipe::Pipe(bool first) {
-    if (!first) {
-        openLeft = CommonFunctions::randomBool();
-        openTop = CommonFunctions::randomBool();
-        openRight = CommonFunctions::randomBool();
-        openBottom = CommonFunctions::randomBool();
-    } else {
-        openLeft = true;
-        openBottom = true;
-        openRight = true;
-        openTop = true;
-    }
+    do {
+        if (!first) {
+            openLeft = CommonFunctions::randomBool();
+            openTop = CommonFunctions::randomBool();
+            openRight = CommonFunctions::randomBool();
+            openBottom = CommonFunctions::randomBool();
+        } else {
+            openLeft = true;
+            openBottom = true;
+            openRight = true;
+            openTop = true;
+        }
+    } while (!(openLeft || openTop || openRight || openBottom));
 }
 
 Pipe Pipe::getPipe() const {

@@ -57,9 +57,9 @@ public:
 
     void placeFirstPipe();
 
-    void changePipe();
+    void changePipeUI();
 
-    void listenForChanges();
+    void newPool();
 };
 
 
