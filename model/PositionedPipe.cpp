@@ -9,15 +9,17 @@ PositionedPipe::PositionedPipe(int x, int y, Pipe &pipe) : position(Point(x, y))
     setPipe(pipe);
 }
 
-bool PositionedPipe::updateIfLegit(PositionedPipe &other) {
+bool PositionedPipe::updateIfLegit(PositionedPipe &other, int *freeHoles) {
     if (Point::areWithinLimits(position, other.position)) {
-        if (checkIfCompatibleSidesAndResetEnds(other))
+        if (checkIfCompatibleSidesAndResetEnds(other, freeHoles))
             return true;
+        else
+            return false;
     } else
         return false;
 }
 
-bool PositionedPipe::checkIfCompatibleSidesAndResetEnds(PositionedPipe &other) {
+bool PositionedPipe::checkIfCompatibleSidesAndResetEnds(PositionedPipe &other, int *freeHoles) {
     if (position.isNeighbor(other.position)) {
         Point p1 = position;
         Point p2 = other.position;
@@ -27,6 +29,7 @@ bool PositionedPipe::checkIfCompatibleSidesAndResetEnds(PositionedPipe &other) {
                 if (getRight() && other.getLeft()) {
                     setRight();
                     other.setLeft();
+                    (*freeHoles)--;
                     return true;
                 } else
                     return false;
@@ -34,6 +37,7 @@ bool PositionedPipe::checkIfCompatibleSidesAndResetEnds(PositionedPipe &other) {
                 if (getBottom() && other.getTop()) {
                     setBottom();
                     other.setTop();
+                    (*freeHoles)--;
                     return true;
                 } else
                     return false;
@@ -41,6 +45,7 @@ bool PositionedPipe::checkIfCompatibleSidesAndResetEnds(PositionedPipe &other) {
                 if (getLeft() && other.getRight()) {
                     setLeft();
                     other.setRight();
+                    (*freeHoles)--;
                     return true;
                 } else
                     return false;
@@ -48,6 +53,7 @@ bool PositionedPipe::checkIfCompatibleSidesAndResetEnds(PositionedPipe &other) {
                 if (getTop() && other.getBottom()) {
                     setTop();
                     other.setBottom();
+                    (*freeHoles)--;
                     return true;
                 } else
                     return false;

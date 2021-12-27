@@ -3,11 +3,11 @@
 //
 
 #include "Controller.h"
-#include "../common/Constants.h"
 #include <SDL_events.h>
 
 Controller::Controller(const Game &game) {
     this->game = game;
+    time(&myTime);
 }
 
 void Controller::begin() {
@@ -63,5 +63,23 @@ int Controller::getPosition() const {
 
 std::vector<Pipe> Controller::newPool() const {
     return game.getPool();
+}
+
+Time Controller::timeFlies() {
+    time_t now;
+    time(&now);
+    if ((now - myTime) >= 1) {
+        myTime = now;
+        game.updateTime(secondDown);
+    }
+    return game.getTime();
+}
+
+void Controller::timePenalty() {
+    game.updateTime(penalty);
+}
+
+void Controller::rewardTime() {
+    game.updateTime(add);
 }
 

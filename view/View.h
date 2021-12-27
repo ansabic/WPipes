@@ -8,23 +8,45 @@
 
 #include <SDL_video.h>
 #include <SDL_render.h>
+#include <map>
 #include "../contoller/Controller.h"
 #include "PipeUI.h"
 #include "TextureWithDestination.h"
 
 class View {
     Controller controller;
+
     SDL_Window *window;
-    SDL_Surface *screenSurface;
-    SDL_Surface *pointerSurface;
-    SDL_Renderer *rend;
-    SDL_Texture *tex;
-    SDL_Rect *dest;
-    SDL_Surface *dotSurface;
-    SDL_Texture *dotTexture;
-    SDL_Rect *dotRect;
+    SDL_Renderer *rend{};
+
+    SDL_Texture *pointerTexture{};
+    SDL_Rect *pointerRect{};
+
+    SDL_Texture *dotTexture{};
+    SDL_Rect *dotRect{};
+
+    SDL_Texture *scoreTitleTexture{};
+    SDL_Rect *scoreTitleRect{};
+
+    SDL_Texture *freeEndsTitleTexture{};
+    SDL_Rect *freeEndsTitleRect{};
+
     std::vector<TextureWithDestination> pipesUiTextures;
     std::vector<TextureWithDestination> poolTextures;
+
+    std::vector<SDL_Texture *> scoreDigitTextures;
+    std::vector<SDL_Rect *> scoreDigitRects;
+    std::vector<TextureWithDestination> scoreDigits;
+
+    std::vector<SDL_Texture *> freeEndTextures;
+    std::vector<SDL_Rect *> freeEndRects;
+    std::vector<TextureWithDestination> freeEndDigits;
+
+    std::vector<SDL_Texture *> digitTextures;
+    std::vector<SDL_Rect *> digitRects;
+    std::vector<TextureWithDestination> timerDigits;
+
+    std::map<std::string, SDL_Surface *> loadedBitmaps;
 
     void listenForEvents();
 
@@ -47,9 +69,9 @@ public:
 
     void placementError();
 
-    void showResult(int score);
+    void resultUi(int score);
 
-    void showFreeEnds(int ends);
+    void freeEndsUi(int ends);
 
     void drawNewPipe(PositionedPipe pipe);
 
@@ -61,7 +83,39 @@ public:
 
     void newPool();
 
-    void writeScore();
+    void clockInit();
+
+    void timeUi(const Time &time);
+
+    void drawAllPipes();
+
+    void drawPool();
+
+    void drawTimer();
+
+    void drawPointer();
+
+    void drawPoolDot();
+
+    void drawScoreTitle();
+
+    void initBitmaps();
+
+    void dotInit();
+
+    void pointerInit();
+
+    void initRenderer();
+
+    void dummyInit();
+
+    void scoreInit();
+
+    void drawResult();
+
+    void initFreeEnds();
+
+    void drawRemaining();
 };
 
 

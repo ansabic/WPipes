@@ -1,10 +1,7 @@
 //
 // Created by antonio on 19. 12. 2021..
 //
-
-#include <random>
 #include "Game.h"
-#include "../common/Constants.h"
 
 void Game::startGame() {
     started = true;
@@ -17,6 +14,7 @@ void Game::endGame() {
 void Game::addPipe(PositionedPipe &pipe) {
     pipes.push_back(pipe);
     generateNextPipe();
+    points += NEW_PIPE_POINTS;
 }
 
 bool Game::movePointer(Direction direction) {
@@ -51,17 +49,19 @@ bool Game::isLegitMove(Direction &direction) const {
 }
 
 bool Game::alreadyExistsThere() const {
-    for (PositionedPipe pipe: pipes)
+    for (PositionedPipe pipe: pipes) {
         if (pointer == pipe.getPosition())
             return true;
+    }
     return false;
 }
 
 bool Game::validateAndCalculateConnections(PositionedPipe &pipe) {
-    bool everythingOk = false;
+    bool everythingOk;
     *toDraw = pipe;
     for (PositionedPipe tempPipe: pipes) {
-        everythingOk = everythingOk || tempPipe.updateIfLegit(pipe);
+        bool result = tempPipe.updateIfLegit(pipe, &freeHoles);
+        everythingOk = everythingOk || result;
     }
     if (everythingOk) {
         addPipe(pipe);
@@ -95,7 +95,7 @@ Game::Game() {
     position = new int;
     setFirstPipe();
     started = false;
-    freeHoles = 0;
+    freeHoles = 4;
     *position = 0;
     nextPipe = pipePool[*position].getPipe();
     pointer = Point(0, 0);
@@ -152,6 +152,24 @@ int Game::getPosition() const {
 
 std::vector<Pipe> Game::getPool() const {
     return pipePool;
+}
+
+Time Game::getTime() const {
+    return gameTime;
+}
+
+void Game::updateTime(TimeAction action) {
+    switch (action) {
+        case penalty:
+            gameTime = gameTime - PENALTY_TIME;
+            break;
+        case add:
+            gameTime.addSeconds(GIFT_TIME);
+            break;
+        case secondDown:
+            gameTime = gameTime - 1;
+            break;
+    }
 }
 
 

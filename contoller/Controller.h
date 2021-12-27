@@ -6,8 +6,11 @@
 #define WPIPES_CONTROLLER_H
 
 
+#include <ctime>
 #include "../model/Game.h"
 #include "GameStateDTO.h"
+#include "../model/Time.h"
+#include "../common/Constants.h"
 
 enum Action {
     movedUp,
@@ -24,6 +27,7 @@ enum Action {
 
 class Controller {
     Game game;
+    time_t myTime{};
 public:
     explicit Controller(const Game &game);
 
@@ -42,6 +46,12 @@ public:
     int getPosition() const;
 
     std::vector<Pipe> newPool() const;
+
+    Time timeFlies();
+
+    void timePenalty();
+
+    void rewardTime();
 };
 
 

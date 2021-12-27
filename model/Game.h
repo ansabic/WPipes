@@ -8,9 +8,15 @@
 
 #include <vector>
 #include "PositionedPipe.h"
+#include "Time.h"
+#include "../common/Constants.h"
 
 enum Direction {
     left, up, right, down
+};
+
+enum TimeAction {
+    penalty, add, secondDown
 };
 
 class Game {
@@ -25,6 +31,7 @@ class Game {
     int end;
     int points;
     Pipe nextPipe;
+    Time gameTime = Time(START_TIME);
 
     void addPipe(PositionedPipe &pipe);
 
@@ -53,7 +60,6 @@ public:
 
     int getFreeEnds() const;
 
-
     int getPoints() const;
 
     void changeNext();
@@ -67,6 +73,10 @@ public:
     int getPosition() const;
 
     std::vector<Pipe> getPool() const;
+
+    Time getTime() const;
+
+    void updateTime(TimeAction action);
 };
 
 

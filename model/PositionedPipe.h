@@ -12,7 +12,7 @@
 class PositionedPipe : public Pipe {
     Point position;
 
-    bool checkIfCompatibleSidesAndResetEnds(PositionedPipe &other);
+    bool checkIfCompatibleSidesAndResetEnds(PositionedPipe &other, int *freeHoles);
 
 public:
     PositionedPipe(int x, int y, Pipe &pipe);
@@ -21,7 +21,7 @@ public:
 
     int getFreeEnds() const;
 
-    bool updateIfLegit(PositionedPipe &other);
+    bool updateIfLegit(PositionedPipe &other, int *freeHoles);
 
     void updatePipe(Pipe &pipe);
 

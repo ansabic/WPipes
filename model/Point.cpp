@@ -41,7 +41,7 @@ int Point::getY() const {
 bool Point::isNeighbor(Point other) const {
     int xDiff = abs(other.getX() - getX());
     int yDiff = abs(other.getY() - getY());
-    if (abs(xDiff - yDiff) == 1)
+    if (abs(xDiff - yDiff) == 1 && xDiff <= 1 && yDiff <= 1)
         return true;
     else
         return false;

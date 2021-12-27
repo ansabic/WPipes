@@ -14,14 +14,14 @@
 #include "../model/Pipe.h"
 
 class PipeUI {
-    SDL_Surface *type;
+    std::string type;
     SDL_Rect *dest;
 public:
     void setTypeFromPipe(Pipe pipe);
 
     void setDest(Point position);
 
-    SDL_Surface *getSurface() const;
+    std::string getType() const;
 
     SDL_Rect *getRect() const;
 
