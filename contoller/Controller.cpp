@@ -8,6 +8,11 @@
 Controller::Controller(const Game &game) {
     this->game = game;
     time(&myTime);
+    gameOver = false;
+}
+
+bool Controller::isGameOver() const {
+    return gameOver;
 }
 
 void Controller::begin() {
@@ -33,16 +38,19 @@ Action Controller::checkState(unsigned int input) {
     else if (input == SDL_SCANCODE_LSHIFT || input == SDL_SCANCODE_RSHIFT) {
         pickNext();
         action = changedPipe;
-    } else
+    } else if (input == SDL_SCANCODE_ESCAPE)
+        action = gameEnded;
+
+    else
         action = neutral;
     if (checkCount())
-        action = gameEndedFull;
+        action = gameEnded;
 
     return action;
 }
 
 GameStateDTO Controller::getState() const {
-    return {game.getFreeEnds(), game.getPoints(), game.lastToDraw()};
+    return {game.getFreeEnds(), game.getPoints(), game.lastToDraw(), game.getStartSolved(), game.getEndSolved()};
 }
 
 bool Controller::checkCount() {
@@ -93,5 +101,9 @@ Point Controller::startingPosition() const {
 
 Point Controller::endingPosition() const {
     return game.endingPosition();
+}
+
+void Controller::setGameOver(bool flag) {
+    Controller::gameOver = flag;
 }
 

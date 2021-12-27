@@ -22,13 +22,18 @@ enum Action {
     showErrorPlacement,
     neutral,
     changedPipe,
-    gameEndedFull
+    gameEnded
 };
 
 class Controller {
     Game game;
     time_t myTime{};
+    bool gameOver;
+
+
 public:
+    void setGameOver(bool flag);
+
     explicit Controller(const Game &game);
 
     void begin();
@@ -58,6 +63,8 @@ public:
     Point startingPosition() const;
 
     Point endingPosition() const;
+
+    bool isGameOver() const;
 };
 
 

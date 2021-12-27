@@ -39,12 +39,17 @@ View::View(Controller &controller) : controller(controller) {
 void View::loop() {
     controller.begin();
     placeFirstPipe();
-    while (controller.isPlaying()) {
+    while (!controller.isGameOver()) {
         Time currentTime = controller.timeFlies();
         if (currentTime.isDone())
             controller.timeOut();
         timeUi(currentTime);
-        listenForEvents();
+        if (controller.isPlaying())
+            listenForEvents();
+        else {
+            controller.setGameOver(true);
+            showGameOver();
+        }
 
         SDL_RenderClear(rend);
 
@@ -94,7 +99,8 @@ void View::listenForEvents() {
                     controller.timePenalty();
                     placementError();
                     break;
-                case gameEndedFull:
+                case gameEnded:
+                    controller.setGameOver(true);
                     showGameOver();
                     break;
                 case changedPipe:
@@ -133,15 +139,27 @@ void View::moveRight() {
 }
 
 void View::movementError() {
-    //TODO OpenGL
+    int flag = SDL_MESSAGEBOX_INFORMATION;
+    SDL_ShowSimpleMessageBox(flag, "Movement Error", "Movement not allowed! Out of bounds!", window);
 }
 
 void View::placementError() {
-    //TODO OpenGL
+    int flag = SDL_MESSAGEBOX_INFORMATION;
+    SDL_ShowSimpleMessageBox(flag, "Placement Error",
+                             "Error placing pipe! Already exists there or not connected properly!", window);
 }
 
 void View::showGameOver() {
-    //TODO OpenGL
+    int flag = SDL_MESSAGEBOX_INFORMATION;
+    int multiplier = 1;
+    if (controller.getState().solvedStart)
+        multiplier++;
+    if (controller.getState().solvedEnd)
+        multiplier++;
+    std::string score = std::to_string(controller.getState().score * multiplier / controller.getState().freeEnds);
+    std::string firstString = "Game over! Your Score is ";
+    std::string resultString = firstString.append(score);
+    SDL_ShowSimpleMessageBox(flag, "GAME OVER", resultString.c_str(), window);
 }
 
 void View::resultUi(int score) {
@@ -192,7 +210,6 @@ void View::placeFirstPipe() {
 
 void View::changePipeUI() {
     int position = controller.getPosition();
-    printf("%d", controller.getPosition());
     if (position != 0)
         dotRect->y += SCREEN_HEIGHT / 5;
     else
