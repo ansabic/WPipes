@@ -22,6 +22,8 @@ public:
     void addSeconds(int other);
 
     int getDigit(int position) const;
+
+    bool isDone() const;
 };
 
 

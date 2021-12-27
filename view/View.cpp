@@ -31,6 +31,7 @@ View::View(Controller &controller) : controller(controller) {
             clockInit();
             scoreInit();
             initFreeEnds();
+            goalsInit();
         }
     }
 }
@@ -40,16 +41,20 @@ void View::loop() {
     placeFirstPipe();
     while (controller.isPlaying()) {
         Time currentTime = controller.timeFlies();
+        if (currentTime.isDone())
+            controller.timeOut();
         timeUi(currentTime);
         listenForEvents();
 
         SDL_RenderClear(rend);
 
         drawPointer();
+        drawGoalPositions();
         drawPoolDot();
         drawAllPipes();
         drawPool();
         drawTimer();
+        drawTowDots();
         drawScoreTitle();
         drawResult();
         drawRemaining();
@@ -135,6 +140,10 @@ void View::placementError() {
     //TODO OpenGL
 }
 
+void View::showGameOver() {
+    //TODO OpenGL
+}
+
 void View::resultUi(int score) {
     Number scoreNumb = Number(score);
     int counter = 0;
@@ -173,10 +182,6 @@ void View::drawNewPipe(PositionedPipe pipe) {
     SDL_QueryTexture(texture, nullptr, nullptr, &pipeUi.getRect()->w, &pipeUi.getRect()->h);
     pipeUi.scale();
     newPool();
-}
-
-void View::showGameOver() {
-    //TODO OpenGL
 }
 
 void View::placeFirstPipe() {
@@ -221,7 +226,25 @@ void View::newPool() {
 }
 
 void View::clockInit() {
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 2; i++) {
+        auto *clockDigit = new SDL_Rect();
+        clockDigit->x = SCREEN_WIDTH + OFFSET_CLOCK_X + i * 15;
+        clockDigit->y = OFFSET_CLOCK_Y;
+        SDL_Texture *digitTexture = SDL_CreateTextureFromSurface(rend, loadedBitmaps["0"]);
+        digitRects.push_back(clockDigit);
+        digitTextures.push_back(digitTexture);
+        SDL_QueryTexture(digitTexture, nullptr, nullptr, &clockDigit->w, &clockDigit->h);
+        TextureWithDestination digitWithDest = TextureWithDestination(digitTexture, clockDigit);
+        timerDigits.push_back(digitWithDest);
+    }
+
+    twoDotRect = new SDL_Rect();
+    twoDotRect->x = SCREEN_WIDTH + OFFSET_CLOCK_X + 2 * 15;
+    twoDotRect->y = OFFSET_CLOCK_Y;
+    twoDotTexture = SDL_CreateTextureFromSurface(rend, loadedBitmaps["twoDots"]);
+    SDL_QueryTexture(twoDotTexture, nullptr, nullptr, &twoDotRect->w, &twoDotRect->h);
+
+    for (int i = 3; i < 5; i++) {
         auto *clockDigit = new SDL_Rect();
         clockDigit->x = SCREEN_WIDTH + OFFSET_CLOCK_X + i * 15;
         clockDigit->y = OFFSET_CLOCK_Y;
@@ -234,10 +257,14 @@ void View::clockInit() {
     }
 }
 
+
 void View::timeUi(const Time &time) {
     for (int i = 0; i < 4; i++) {
         SDL_Rect *clockDigit = digitRects[i];
-        clockDigit->x = SCREEN_WIDTH + OFFSET_CLOCK_X + i * 15;
+        int j = i;
+        if (i >= 2)
+            j++;
+        clockDigit->x = SCREEN_WIDTH + OFFSET_CLOCK_X + j * 15;
         clockDigit->y = OFFSET_CLOCK_Y;
         int digitNumber = time.getDigit(i);
         SDL_DestroyTexture(digitTextures[i]);
@@ -302,6 +329,9 @@ void View::initBitmaps() {
     loadedBitmaps["b"] = SDL_LoadBMP("/home/antonio/CLionProjects/WPipes/assets/b.bmp");
     loadedBitmaps["score"] = SDL_LoadBMP("/home/antonio/CLionProjects/WPipes/assets/score.bmp");
     loadedBitmaps["freeEnds"] = SDL_LoadBMP("/home/antonio/CLionProjects/WPipes/assets/remaining.bmp");
+    loadedBitmaps["start"] = SDL_LoadBMP("/home/antonio/CLionProjects/WPipes/assets/start.bmp");
+    loadedBitmaps["end"] = SDL_LoadBMP("/home/antonio/CLionProjects/WPipes/assets/start.bmp");
+    loadedBitmaps["twoDots"] = SDL_LoadBMP("/home/antonio/CLionProjects/WPipes/assets/twoDots.bmp");
 }
 
 void View::dotInit() {
@@ -397,4 +427,44 @@ void View::drawRemaining() {
     SDL_RenderCopy(rend, freeEndsTitleTexture, nullptr, freeEndsTitleRect);
     for (TextureWithDestination digit: freeEndDigits)
         SDL_RenderCopy(rend, digit.getTexture(), nullptr, digit.getRect());
+}
+
+Positions View::getGoalPositions() const {
+    return {controller.startingPosition(), controller.endingPosition()};
+}
+
+
+void View::goalsInit() {
+    Positions goalPositions = getGoalPositions();
+    goalPositions.getStart().scale();
+    goalPositions.getAnEnd().scale();
+
+    startRect = new SDL_Rect();
+    endRect = new SDL_Rect();
+
+    startRect->x = goalPositions.getStart().getX();
+    startRect->y = goalPositions.getStart().getY();
+    startTexture = SDL_CreateTextureFromSurface(rend, loadedBitmaps["start"]);
+
+    endRect->x = goalPositions.getAnEnd().getX();
+    endRect->y = goalPositions.getAnEnd().getY();
+    endTexture = SDL_CreateTextureFromSurface(rend, loadedBitmaps["end"]);
+
+    SDL_QueryTexture(endTexture, nullptr, nullptr, &endRect->w, &endRect->h);
+    SDL_QueryTexture(startTexture, nullptr, nullptr, &startRect->w, &startRect->h);
+
+    endRect->w = SCREEN_WIDTH / LIMIT_RIGHT;
+    endRect->h = SCREEN_HEIGHT / LIMIT_BOTTOM;
+
+    startRect->w = SCREEN_WIDTH / LIMIT_RIGHT;
+    startRect->h = SCREEN_HEIGHT / LIMIT_BOTTOM;
+}
+
+void View::drawGoalPositions() {
+    SDL_RenderCopy(rend, startTexture, nullptr, startRect);
+    SDL_RenderCopy(rend, endTexture, nullptr, endRect);
+}
+
+void View::drawTowDots() {
+    SDL_RenderCopy(rend, twoDotTexture, nullptr, twoDotRect);
 }

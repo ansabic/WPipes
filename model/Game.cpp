@@ -60,7 +60,9 @@ bool Game::validateAndCalculateConnections(PositionedPipe &pipe) {
     bool everythingOk;
     *toDraw = pipe;
     for (PositionedPipe tempPipe: pipes) {
-        bool result = tempPipe.updateIfLegit(pipe, &freeHoles);
+        Point startP = startingPosition();
+        Point endP = endingPosition();
+        bool result = tempPipe.updateIfLegit(pipe, &freeHoles, &startP, &endP, &startSolved, &endSolved);
         everythingOk = everythingOk || result;
     }
     if (everythingOk) {
@@ -107,10 +109,12 @@ Game::Game() {
     points = 0;
     toDraw = new PositionedPipe(0, 0, nextPipe);
     *toDraw = PositionedPipe(0, 0, nextPipe);
+    startSolved = false;
+    endSolved = false;
 }
 
 bool Game::isPlaying() const {
-    return started;
+    return started && (!startSolved || !endSolved || freeHoles != 0);
 }
 
 int Game::getFreeEnds() const {
@@ -170,6 +174,56 @@ void Game::updateTime(TimeAction action) {
             gameTime = gameTime - 1;
             break;
     }
+}
+
+void Game::stop() {
+    started = false;
+}
+
+Point Game::endingPosition() const {
+    int result = end % 2;
+    int x, y;
+    if (result) {
+        x = (end / 4) % LIMIT_RIGHT;
+        if ((end + 1) % 4 == 0)
+            y = 0;
+        else
+            y = LIMIT_BOTTOM - 1;
+    } else {
+        y = (end / 4) / LIMIT_BOTTOM;
+        if (end % 4 == 0)
+            x = 0;
+        else
+            x = LIMIT_RIGHT - 1;
+    }
+    return {x, y};
+}
+
+Point Game::startingPosition() const {
+    int result = start % 2;
+    int x, y;
+    if (result) {
+        x = (start / 4) % LIMIT_RIGHT;
+        if ((start + 1) % 4 == 0)
+            y = 0;
+        else
+            y = LIMIT_BOTTOM - 1;
+    } else {
+        y = (start / 4) % LIMIT_BOTTOM;
+        if (start % 4 == 0)
+            x = 0;
+        else
+            x = LIMIT_RIGHT - 1;
+    }
+    return {x, y};
+}
+
+bool Game::getStartSolved() const {
+    return startSolved;
+}
+
+bool Game::getEndSolved() const {
+    return endSolved;
 }
 
 

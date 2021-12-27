@@ -1,6 +1,7 @@
 #include "view/View.h"
 
 View initView() {
+    srand(time(nullptr));
     Game game = Game();
     Controller controller = Controller(game);
     return View(controller);

@@ -21,6 +21,8 @@ enum TimeAction {
 
 class Game {
     bool started;
+    bool startSolved;
+    bool endSolved;
     std::vector<PositionedPipe> pipes;
     int freeHoles;
     int *position;
@@ -77,6 +79,16 @@ public:
     Time getTime() const;
 
     void updateTime(TimeAction action);
+
+    void stop();
+
+    Point endingPosition() const;
+
+    Point startingPosition() const;
+
+    bool getStartSolved() const;
+
+    bool getEndSolved() const;
 };
 
 

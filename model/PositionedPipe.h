@@ -21,7 +21,8 @@ public:
 
     int getFreeEnds() const;
 
-    bool updateIfLegit(PositionedPipe &other, int *freeHoles);
+    bool
+    updateIfLegit(PositionedPipe &other, int *freeHoles, Point *start, Point *end, bool *startSolved, bool *endSolved);
 
     void updatePipe(Pipe &pipe);
 

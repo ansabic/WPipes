@@ -12,6 +12,7 @@
 #include "../contoller/Controller.h"
 #include "PipeUI.h"
 #include "TextureWithDestination.h"
+#include "Positions.h"
 
 class View {
     Controller controller;
@@ -31,6 +32,15 @@ class View {
     SDL_Texture *freeEndsTitleTexture{};
     SDL_Rect *freeEndsTitleRect{};
 
+    SDL_Texture *startTexture{};
+    SDL_Rect *startRect{};
+
+    SDL_Texture *endTexture{};
+    SDL_Rect *endRect{};
+
+    SDL_Texture *twoDotTexture{};
+    SDL_Rect *twoDotRect{};
+
     std::vector<TextureWithDestination> pipesUiTextures;
     std::vector<TextureWithDestination> poolTextures;
 
@@ -49,11 +59,6 @@ class View {
     std::map<std::string, SDL_Surface *> loadedBitmaps;
 
     void listenForEvents();
-
-public:
-    explicit View(Controller &controller);
-
-    void loop();
 
     void moveUp();
 
@@ -87,6 +92,8 @@ public:
 
     void timeUi(const Time &time);
 
+    void drawTowDots();
+
     void drawAllPipes();
 
     void drawPool();
@@ -116,6 +123,17 @@ public:
     void initFreeEnds();
 
     void drawRemaining();
+
+    Positions getGoalPositions() const;
+
+    void drawGoalPositions();
+
+public:
+    explicit View(Controller &controller);
+
+    void loop();
+
+    void goalsInit();
 };
 
 

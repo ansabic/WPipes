@@ -83,3 +83,15 @@ void Controller::rewardTime() {
     game.updateTime(add);
 }
 
+void Controller::timeOut() {
+    game.stop();
+}
+
+Point Controller::startingPosition() const {
+    return game.startingPosition();
+}
+
+Point Controller::endingPosition() const {
+    return game.endingPosition();
+}
+

@@ -36,6 +36,8 @@ public:
     void addX();
 
     void addY();
+
+    void scale();
 };
 
 

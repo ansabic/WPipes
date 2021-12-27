@@ -46,3 +46,10 @@ int Time::getDigit(int position) const {
     }
     return result;
 }
+
+bool Time::isDone() const {
+    if (minutes.value() == 0 && seconds.value() == 0)
+        return true;
+    else
+        return false;
+}

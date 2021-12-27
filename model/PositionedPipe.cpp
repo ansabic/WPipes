@@ -9,8 +9,13 @@ PositionedPipe::PositionedPipe(int x, int y, Pipe &pipe) : position(Point(x, y))
     setPipe(pipe);
 }
 
-bool PositionedPipe::updateIfLegit(PositionedPipe &other, int *freeHoles) {
+bool PositionedPipe::updateIfLegit(PositionedPipe &other, int *freeHoles, Point *start, Point *end, bool *startSolved,
+                                   bool *endSolved) {
     if (Point::areWithinLimits(position, other.position)) {
+        if ((!*startSolved) && position == *start)
+            *startSolved = true;
+        if ((!*endSolved) && position == *end)
+            *endSolved = true;
         if (checkIfCompatibleSidesAndResetEnds(other, freeHoles))
             return true;
         else

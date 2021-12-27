@@ -52,7 +52,7 @@ bool Point::areWithinLimits(Point &p1, Point &p2) {
     int maxY = CommonFunctions::max(p1.getY(), p2.getY());
     int minX = CommonFunctions::min(p1.getX(), p2.getX());
     int minY = CommonFunctions::min(p1.getY(), p2.getY());
-    if (maxX < LIMIT_RIGHT && minX > LIMIT_LEFT && maxY < LIMIT_BOTTOM && minY > LIMIT_UP)
+    if (maxX <= LIMIT_RIGHT && minX >= LIMIT_LEFT && maxY <= LIMIT_BOTTOM && minY >= LIMIT_UP)
         return true;
     else
         return false;
@@ -84,6 +84,11 @@ bool Point::operator==(Point other) const {
 Point::Point() {
     x = 0;
     y = 0;
+}
+
+void Point::scale() {
+    y *= SCREEN_HEIGHT / LIMIT_BOTTOM;
+    x *= SCREEN_WIDTH / LIMIT_RIGHT;
 }
 
 

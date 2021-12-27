@@ -52,6 +52,12 @@ public:
     void timePenalty();
 
     void rewardTime();
+
+    void timeOut();
+
+    Point startingPosition() const;
+
+    Point endingPosition() const;
 };
 
 
